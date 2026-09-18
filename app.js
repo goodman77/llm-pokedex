@@ -131,6 +131,12 @@ const updateDetailNav = (busy = false) => {
         detailNextButton.disabled = true;
         return;
     }
+    // Form IDs (10000+) are not list offsets — navigate by id instead
+    if (!currentBrowseList && currentDetailPokemon && currentDetailPokemon.id >= 10000) {
+        detailPrevButton.disabled = currentDetailPokemon.id <= 10001;
+        detailNextButton.disabled = false;
+        return;
+    }
     detailPrevButton.disabled = currentListIndex <= 0;
     detailNextButton.disabled = currentListIndex >= totalCount - 1;
 };
@@ -844,6 +850,23 @@ const applyPageFilter = () => {
 
 // Move Next or previous pokemon (step is -1 or 1) for detail page and open that Pokémon
 const goToNeighbor = async (step) => {
+    // Form / variant IDs (10000+) are not the same as national list offsets.
+    // After searching e.g. 10004, prev/next should go to 10003 / 10005 by id.
+    if (!currentBrowseList && currentDetailPokemon && currentDetailPokemon.id >= 10000) {
+        const nextId = currentDetailPokemon.id + step;
+        if (nextId < 10001) return;
+        updateDetailNav(true);
+        setScreen('loading');
+        const data = await fetchPokemon(String(nextId));
+        if (!data || !data.sprites) {
+            setScreen('detail');
+            updateDetailNav();
+            return;
+        }
+        showDetail(data);
+        return;
+    }
+
     const nextIndex = currentListIndex + step;
     if (nextIndex < 0 || nextIndex >= totalCount) return;
     updateDetailNav(true);
