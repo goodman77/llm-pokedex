@@ -155,14 +155,20 @@ const getIdFromUrl = (url) => {
     return Number(parts[parts.length - 1]);
 };
 
+// Replace spaces with hyphens for the search name
+const pokemanSearchName = (pokemonName) => {
+    return pokemonName.replaceAll(' ', '-');
+};
+
 /******************
  * Fetch
  ******************/
 
 // GET /pokemon/{name or id} — returns JSON or null
-const fetchPokemon = async (pokemonName) => {
+const fetchPokemon = async (pokemon) => {
     try {
-        const response = await fetch(`${apiUrl}${pokemonName}`);
+        pokemon = pokemanSearchName(String(pokemon));
+        const response = await fetch(`${apiUrl}${pokemon}`);
         if (!response.ok) return null;
         return await response.json();
     } catch (error) {
@@ -580,12 +586,12 @@ const renderMoves = (moves) => {
 };
 
 // Walk nested evolves_to and return names in order (also handles branches like Eevee)
-const collectEvolutionNames = (node, names = []) => {
-    names.push(node.species.name);
+const collectEvolutionIds = (node, ids = []) => {
+    ids.push(getIdFromUrl(node.species.url));
     node.evolves_to.forEach((next) => {
-        collectEvolutionNames(next, names);
+        collectEvolutionIds(next, ids);
     });
-    return names;
+    return ids;
 };
 
 // Fetch the evolution chain and sprites; ignore the result if another Pokémon opened
@@ -594,8 +600,8 @@ const loadEvolutionChain = async (evolutionUrl, requestedId) => {
         const evolutionResponse = await fetch(evolutionUrl);
         if (!evolutionResponse.ok) return;
         const evolution = await evolutionResponse.json();
-        const names = collectEvolutionNames(evolution.chain);
-        const details = await Promise.all(names.map((name) => fetchPokemon(name)));
+        const ids = collectEvolutionIds(evolution.chain);
+        const details = await Promise.all(ids.map((id) => fetchPokemon(id)));
         // Ignore this result if the user already opened another Pokémon
         if (currentDetailPokemon && currentDetailPokemon.id !== requestedId) return;
         const stages = details
