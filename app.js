@@ -262,7 +262,7 @@ const cacheGenerationSpecies = (generationId, data) => {
 // GET /generation/{id} — used for region labels and the species list
 const fetchGenerationData = async (generationId) => {
     try {
-        const response = await fetch(`https://pokeapi.co/api/v2/generation/${generationId}`);
+        const response = await fetch(`${generationApiUrl}${generationId}`);
         if (!response.ok) return null;
         const data = await response.json();
         cacheGenerationSpecies(generationId, data);
