@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/pokeball.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <title>Pokedex search & explore</title>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <nav>
+          <div class="brand">
+            <img src="img/pokeball.png" alt="Pokédex home" />
+            <div class="brand-text">
+              <h1>Pokédex</h1>
+              <p>Search, browse and explore Pokémon</p>
+            </div>
+          </div>
+          <form id="search-form" class="search">
+            <label class="visually-hidden" for="pokemon-input"
+              >Search by name or Pokédex number</label
+            >
+            <input
+              type="text"
+              id="pokemon-input"
+              name="pokemon"
+              placeholder="Search by name or by Pokédex number..."
+            />
+            <button type="submit" id="search-button">Search</button>
+          </form>
+          <div class="header-actions">
+            <button type="button" id="random-button">
+              <i class="fa fa-random" aria-hidden="true"></i> Random
+            </button>
+            <button type="button" id="compare-button">
+              <i class="fa fa-balance-scale" aria-hidden="true"></i> Compare
+            </button>
+          </div>
+        </nav>
+      </header>
+      <!-- Recently Viewed Section -->
+      <div id="recently-viewed" class="recently-viewed hidden">
+        <span class="recently-viewed-label">Recently Viewed:</span>
+        <div id="recently-viewed-list" class="recently-viewed-list"></div>
+      </div>
+
+      <!-- Loading Section -->
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+
+      <!-- Pokemon Detail Section -->
+      <section id="pokemon-detail" class="detail hidden">
+        <div class="detail-actions">
+          <button type="button" class="back-to-list">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Pokemon
+            List
+          </button>
+          <button type="button" id="add-to-compare">
+            <i class="fa fa-plus" aria-hidden="true"></i> Add to Compare
+          </button>
+        </div>
+
+        <div class="detail-body">
+          <div class="detail-hero">
+            <p id="detail-id"></p>
+            <div class="detail-title">
+              <h2 id="detail-name"></h2>
+              <div id="detail-types" class="types"></div>
+            </div>
+            <p id="detail-genus"></p>
+            <img id="detail-image" src="" alt="" />
+            <p id="detail-flavor"></p>
+          </div>
+
+          <div class="detail-side">
+            <div class="detail-panel">
+              <h3>
+                <i class="fa fa-info-circle" aria-hidden="true"></i> Basic
+                Information
+              </h3>
+              <div class="info-row">
+                <span>Height</span>
+                <span id="detail-height"></span>
+              </div>
+              <div class="info-row">
+                <span>Weight</span>
+                <span id="detail-weight"></span>
+              </div>
+              <div class="info-row">
+                <span>Base Experience</span>
+                <span id="detail-base-experience"></span>
+              </div>
+              <div class="info-row">
+                <span>Abilities</span>
+                <div id="detail-abilities" class="ability-list"></div>
+              </div>
+              <div id="ability-detail" class="ability-detail">
+                <strong id="ability-name"></strong>
+                <p id="ability-description">
+                  Click an ability to see its description.
+                </p>
+              </div>
+            </div>
+
+            <div class="detail-panel">
+              <h3>
+                <i class="fa fa-bar-chart" aria-hidden="true"></i> Base Stats
+              </h3>
+              <ul id="detail-stats"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="evolution-chain" class="detail-panel evolution-chain">
+          <h3>
+            <i class="fa fa-sitemap" aria-hidden="true"></i> Evolution Chain
+          </h3>
+          <div id="evolution-list" class="evolution-list"></div>
+        </div>
+
+        <div id="detail-moves" class="detail-panel moves-panel">
+          <h3><i class="fa fa-bolt" aria-hidden="true"></i> Moves</h3>
+          <p class="moves-hint">Level-up moves (name + level)</p>
+          <ul id="moves-list"></ul>
+        </div>
+
+        <div class="detail-nav">
+          <button type="button" id="detail-prev">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Previous Pokémon
+          </button>
+          <button type="button" id="detail-next">
+            Next Pokémon <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Pokemon Compare Section -->
+      <section id="pokemon-compare" class="compare hidden">
+        <button type="button" id="compare-back" class="back-to-list">
+          <i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Pokemon
+          List
+        </button>
+        <h2 class="compare-title">Pokémon Comparison</h2>
+        <p id="compare-hint" class="compare-hint"></p>
+        <div id="compare-heads" class="compare-heads"></div>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Stat</th>
+              <th id="compare-name-left">—</th>
+              <th id="compare-name-right">—</th>
+            </tr>
+          </thead>
+          <tbody id="compare-stats"></tbody>
+        </table>
+      </section>
+
+      <!-- No Results Section -->
+      <div id="no-results" class="no-results hidden">
+        <img src="img/not-found.png" alt="Pokémon not found" />
+        <h3>No Pokémon found</h3>
+        <p>
+          We couldn't find any Pokémon with that name or number "<span
+            id="search-query"
+          ></span
+          >"
+        </p>
+        <p>Please try again with a different name or number</p>
+        <button type="button" class="back-to-list back-button-center">
+          <i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Pokemon
+          List
+        </button>
+      </div>
+      <!-- Browse Section -->
+      <div id="browse">
+        <div id="hero-section">
+          <div id="hero-content">
+            <h3>Explore Pokémon</h3>
+          </div>
+          <div class="browse-filters">
+            <label for="generation-filter">Generation</label>
+            <select id="generation-filter">
+              <option value="">All generations</option>
+            </select>
+            <label for="type-filter">Types</label>
+            <select id="type-filter">
+              <option value="">All types</option>
+            </select>
+          </div>
+          <div id="pokemon-count">
+            <img class="pokeball-icon" src="img/pokeball.png" alt="" />
+            <div class="pokemon-count-text">
+              <span>Total Pokémon</span>
+              <span id="total-pokemon"></span>
+            </div>
+          </div>
+        </div>
+        <!-- Pokemon Grid Section -->
+        <nav class="pagination">
+          <button type="button" class="prev-button">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Previous
+          </button>
+          <span class="page-info">Page <span class="current-page"></span></span>
+          <button type="button" class="next-button">
+            Next <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </button>
+          <span class="page-range"></span>
+        </nav>
+        <div class="page-filter">
+          <label for="page-filter-input">Filter this page</label>
+          <input
+            type="text"
+            id="page-filter-input"
+            placeholder="Name or number..."
+          />
+          <label class="visually-hidden" for="page-filter-type"
+            >Filter by type</label
+          >
+          <select id="page-filter-type">
+            <option value="">All types</option>
+          </select>
+        </div>
+        <main id="pokemon-grid"></main>
+        <nav class="pagination">
+          <button type="button" class="prev-button">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Previous
+          </button>
+          <span class="page-info">Page <span class="current-page"></span></span>
+          <button type="button" class="next-button">
+            Next <i class="fa fa-arrow-right" aria-hidden="true"></i>
+          </button>
+          <span class="page-range"></span>
+        </nav>
+      </div>
+      <footer>
+        <p>
+          Data from
+          <a
+            href="https://pokeapi.co/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >PokéAPI</a
+          >. Pokémon and Pokémon character names are trademarks of Nintendo.
+        </p>
+      </footer>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
