@@ -4,6 +4,8 @@ A vanilla JavaScript Pokédex that lets you **search**, **browse**, and **explor
 
 This project was completed as part of an LLM-assisted JavaScript learning assignment: use an AI coding assistant as a pair programmer while still writing and understanding the application yourself.
 
+Live Demo : https://goodman77.github.io/llm-pokedex/
+
 ---
 
 ## Features
