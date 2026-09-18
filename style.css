@@ -681,11 +681,14 @@ header nav .search button:focus {
 
 .detail-nav {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
 }
 
 .detail-nav button {
-  margin: 10px;
+  margin: 10px 0;
 }
 
 .info-row {
@@ -986,8 +989,9 @@ footer a {
   }
 
   .detail-nav {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .detail-nav button {
